@@ -17,17 +17,17 @@ class HeadphoneSpider(CrawlSpider):
     rules = (
         Rule(LinkExtractor(allow=('page='), restrict_css=('.pagnLink')),
              process_links="filter_links"),
-        # Rule(LinkExtractor(allow=('pageNo=', 'seq=', )),
-        #      callback='parse_catalog'),
+        Rule(LinkExtractor(restrict_css=('.s-access-detail-page')),
+             callback='parse_detail')
     )
 
     def filter_links(self, links):
-        for link in links:
-            self.logger.warning(link.url)
+        # for link in links:
+        #     self.logger.warning(link.url)
         return links
 
     # def start_requests(self):
     #     pass
 
-    def parse_catalog(self, response):
-        pass
+    def parse_detail(self, response):
+        self.logger.warning(response.url)
