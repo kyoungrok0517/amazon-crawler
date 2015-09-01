@@ -8,7 +8,9 @@
 import scrapy
 
 
-class AmazonCrawlerItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class AmazonItem(scrapy.Item):
+    title = scrapy.Field()
+    link = scrapy.Field()
+    comments = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()

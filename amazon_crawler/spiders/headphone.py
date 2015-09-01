@@ -7,6 +7,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.exceptions import CloseSpider
 from urlparse import parse_qsl, urlparse
+from amazon_crawler.items import AmazonItem
 
 
 class HeadphoneSpider(CrawlSpider):
@@ -21,15 +22,17 @@ class HeadphoneSpider(CrawlSpider):
              callback='parse_detail')
     )
 
-    # def filter_links(self, links):
-    # for link in links:
-    # self.logger.warning(link.url)
-    #     return links
-
-    # def start_requests(self):
-    #     pass
     def parse_catalog(self, response):
-        self.logger.warning(response.url)
+        item_containers = response.css('.s-item-container')
+        for ic in item_containers:
+            item = AmazonItem()
+            item['title'] = ic.css('h2.s-access-title::text').extract_first()
+            item['image_urls'] = ic.xpath('.//img/@src').extract()
+            item['link'] = ic.css(
+                'a.s-access-detail-page').xpath('@href').extract_first()
+            item['comments'] = ic.css(
+                'a.a-size-small.a-link-normal.a-text-normal ::text').extract()[-1]
+            yield item
 
     def parse_detail(self, response):
         # self.logger.warning(response.url)

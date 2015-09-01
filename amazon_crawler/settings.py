@@ -64,9 +64,19 @@ LOG_LEVEL = "WARNING"
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'amazon_crawler.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+}
+IMAGES_STORE = 'images'
+# IMAGES_THUMBS = {'small': (50, 50)}
+# FILES_STORE = 'files'
+
+FEED_URI = 'crawl/results.json'
+FEED_FORMAT = 'jsonlines'
+
+DOWNLOAD_HANDLERS = {
+    's3': None,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
