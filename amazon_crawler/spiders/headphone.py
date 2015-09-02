@@ -8,7 +8,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.exceptions import CloseSpider
 from urlparse import parse_qsl, urlparse
-from amazon_crawler.items import AmazonCatalogItem, AmazonDetailItem
+from amazon_crawler.items import AmazonCatalogItem, AmazonDetailItem, AmazonReviewItem
 
 
 class HeadphoneSpider(CrawlSpider):
@@ -29,12 +29,31 @@ class HeadphoneSpider(CrawlSpider):
         return re.search(self.REVIEW_COUNT_PATTERN, s).group(0)
 
     def parse_reviews(self, response):
-        self.logger.warning(response.url)
-        self.logger.warning(response.meta['item_link'])
+        review_containers = response.xpath(
+            '//*[@id="cm_cr-review_list"]//div[@class="a-section review" and @id]')
+        for rc in review_containers:
+            item = AmazonReviewItem()
+            item['item_type'] = 'review'
+            try:
+                item['link'] = response.url
+                item['item_link'] = response.meta['item_link']
+                item['helpful_vote_count'] = rc.xpath(
+                    './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first()
+                item['title'] = rc.xpath(
+                    './/*[contains(@class, "review-title")]/text()').extract_first()
+                item['text'] = rc.xpath(
+                    './/span[contains(@class, "review-text")]/text()').extract()
+
+                if item['title']:
+                    yield item
+
+            except Exception as e:
+                self.logger.error('parsing error: %s' % response)
 
     def parse_detail(self, response):
         try:
             item = AmazonDetailItem()
+            item['item_type'] = 'detail'
             item['title'] = response.xpath(
                 '//*[@id="productTitle"]/text()').extract_first()
             item['features'] = "\n".join(
@@ -48,7 +67,7 @@ class HeadphoneSpider(CrawlSpider):
             item['link'] = response.url
             item['review_link'] = response.xpath(
                 '//*[@id="summaryStars"]/a/@href').extract_first()
-            yield item
+            # yield item
         except Exception as e:
             self.logger.error('parsing error: %s' % response)
 
@@ -59,6 +78,7 @@ class HeadphoneSpider(CrawlSpider):
         item_containers = response.css('.s-item-container')
         for ic in item_containers:
             item = AmazonCatalogItem()
+            item['item_type'] = 'catalog'
             try:
                 item['title'] = ic.css(
                     'h2.s-access-title::text').extract_first()
@@ -67,7 +87,7 @@ class HeadphoneSpider(CrawlSpider):
                     'a.s-access-detail-page').xpath('@href').extract_first()
                 item['review_count'] = ic.xpath(
                     './/a[contains(@href, "#customerReviews")]/text()').extract_first()
-                yield item
+                # yield item
             except Exception as e:
                 self.logger.error('parsing error: %s' % response)
                 raise CloseSpider()
