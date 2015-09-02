@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import scrapy
 import re
+from scrapy.http import Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.exceptions import CloseSpider
@@ -24,8 +25,12 @@ class HeadphoneSpider(CrawlSpider):
     )
     REVIEW_COUNT_PATTERN = re.compile(r'[0-9]+,?[0-9]+')
 
-    def extract_review_count(self, s):
+    def _extract_review_count(self, s):
         return re.search(self.REVIEW_COUNT_PATTERN, s).group(0)
+
+    def parse_reviews(self, response):
+        self.logger.warning(response.url)
+        self.logger.warning(response.meta['item_link'])
 
     def parse_detail(self, response):
         try:
@@ -37,13 +42,18 @@ class HeadphoneSpider(CrawlSpider):
 
             review_count_string = response.xpath(
                 '//*[@id="acrCustomerReviewText"]/text()').extract_first()
-            item['review_count'] = self.extract_review_count(
+            item['review_count'] = self._extract_review_count(
                 review_count_string)
 
             item['link'] = response.url
+            item['review_link'] = response.xpath(
+                '//*[@id="summaryStars"]/a/@href').extract_first()
             yield item
         except Exception as e:
             self.logger.error('parsing error: %s' % response)
+
+        # 리뷰 크롤링
+        yield Request(item['review_link'], meta={'item_link': item['link']}, callback=self.parse_reviews)
 
     def parse_catalog(self, response):
         item_containers = response.css('.s-item-container')
