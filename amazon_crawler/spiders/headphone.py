@@ -26,13 +26,18 @@ class HeadphoneSpider(CrawlSpider):
         item_containers = response.css('.s-item-container')
         for ic in item_containers:
             item = AmazonItem()
-            item['title'] = ic.css('h2.s-access-title::text').extract_first()
-            item['image_urls'] = ic.xpath('.//img/@src').extract()
-            item['link'] = ic.css(
-                'a.s-access-detail-page').xpath('@href').extract_first()
-            item['comments'] = ic.css(
-                'a.a-size-small.a-link-normal.a-text-normal ::text').extract()[-1]
-            yield item
+            try:
+                item['title'] = ic.css(
+                    'h2.s-access-title::text').extract_first()
+                item['image_urls'] = ic.xpath('.//img/@src').extract()
+                item['link'] = ic.css(
+                    'a.s-access-detail-page').xpath('@href').extract_first()
+                item['comments'] = ic.xpath(
+                    './/a[contains(@href, "#customerReviews")]/text()').extract_first()
+                yield item
+            except Exception as e:
+                self.logger.error('parsing error: %s' % response)
+                raise CloseSpider()
 
     def parse_detail(self, response):
         # self.logger.warning(response.url)

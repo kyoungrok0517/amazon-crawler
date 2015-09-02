@@ -15,7 +15,7 @@ SPIDER_MODULES = ['amazon_crawler.spiders']
 NEWSPIDER_MODULE = 'amazon_crawler.spiders'
 
 
-LOG_FILE = "amazon.log"
+# LOG_FILE = "amazon.log"
 LOG_LEVEL = "WARNING"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -71,7 +71,7 @@ IMAGES_STORE = 'images'
 # IMAGES_THUMBS = {'small': (50, 50)}
 # FILES_STORE = 'files'
 
-FEED_URI = 'crawl/results.json'
+FEED_URI = 'crawl/%(name)s/%(time)s.json'
 FEED_FORMAT = 'jsonlines'
 
 DOWNLOAD_HANDLERS = {
