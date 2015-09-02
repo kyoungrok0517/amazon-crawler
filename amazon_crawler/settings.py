@@ -71,7 +71,7 @@ IMAGES_STORE = 'images'
 # IMAGES_THUMBS = {'small': (50, 50)}
 # FILES_STORE = 'files'
 
-FEED_URI = 'crawl/%(name)s/%(time)s.json'
+FEED_URI = 'crawl/%(name)s/%(name)s_%(time)s.json'
 FEED_FORMAT = 'jsonlines'
 
 DOWNLOAD_HANDLERS = {
