@@ -8,9 +8,23 @@
 import scrapy
 
 
-class AmazonItem(scrapy.Item):
+class AmazonCatalogItem(scrapy.Item):
     title = scrapy.Field()
     link = scrapy.Field()
-    comments = scrapy.Field()
+    review_count = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
+
+
+class AmazonDetailItem(scrapy.Item):
+    title = scrapy.Field()
+    features = scrapy.Field()
+    review_count = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
+    link = scrapy.Field()
+
+class AmazonReviewItem(scrapy.Item):
+    helpful_vote_count = scrapy.Field()
+    title = scrapy.Field()
+    text = scrapy.Field()

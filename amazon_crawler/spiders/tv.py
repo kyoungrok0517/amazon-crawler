@@ -7,7 +7,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.exceptions import CloseSpider
 from urlparse import parse_qsl, urlparse
-from amazon_crawler.items import AmazonItem
+from amazon_crawler.items import AmazonCatalogItem
 
 
 class TvSpider(CrawlSpider):
@@ -23,14 +23,14 @@ class TvSpider(CrawlSpider):
     def parse_catalog(self, response):
         item_containers = response.css('.s-item-container')
         for ic in item_containers:
-            item = AmazonItem()
+            item = AmazonCatalogItem()
             try:
                 item['title'] = ic.css(
                     '.s-access-title::text').extract_first()
                 item['image_urls'] = ic.xpath('.//img/@src').extract()
                 item['link'] = ic.css(
                     'a.s-access-detail-page').xpath('@href').extract_first()
-                item['comments'] = ic.xpath(
+                item['review_count'] = ic.xpath(
                     './/a[contains(@href, "#customerReviews")]/text()').extract_first()
                 yield item
             except Exception as e:
