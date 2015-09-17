@@ -46,7 +46,7 @@ class ToySpider(CrawlSpider):
             item['item_type'] = 'detail'
             item['title'] = response.xpath(
                 '//*[@id="productTitle"]/text()').extract_first()
-            item['features'] = "\n".join(
+            item['features'] = " ".join(
                 response.xpath('//*[@id="featurebullets_feature_div"]//span/text()').extract())
 
             review_count_string = response.xpath(
@@ -80,7 +80,7 @@ class ToySpider(CrawlSpider):
                     './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first()
                 item['title'] = rc.xpath(
                     './/*[contains(@class, "review-title")]/text()').extract_first()
-                item['text'] = "\n".join(rc.xpath(
+                item['text'] = " ".join(rc.xpath(
                     './/span[contains(@class, "review-text")]/text()').extract())
 
                 if item['title']:
