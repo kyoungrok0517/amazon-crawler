@@ -15,7 +15,7 @@ SPIDER_MODULES = ['amazon_crawler.spiders']
 NEWSPIDER_MODULE = 'amazon_crawler.spiders'
 
 
-# LOG_FILE = "amazon.log"
+LOG_FILE = "amazon.log"
 LOG_LEVEL = "INFO"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -29,7 +29,7 @@ LOG_LEVEL = "INFO"
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 4
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 8
 
 # Disable cookies (enabled by default)

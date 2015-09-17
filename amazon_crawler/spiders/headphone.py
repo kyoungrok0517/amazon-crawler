@@ -23,7 +23,7 @@ class HeadphoneSpider(CrawlSpider):
         Rule(LinkExtractor(restrict_css=('.s-access-detail-page')),
              callback='parse_detail')
     )
-    REVIEW_COUNT_PATTERN = re.compile(r'[0-9]+,?[0-9]+')
+    REVIEW_COUNT_PATTERN = re.compile(r'[0-9]+(,?[0-9]*)')
     def _extract_review_count(self, s):
         count_string = str(re.search(self.REVIEW_COUNT_PATTERN, s).group(0)) 
         return int(count_string.replace(',', ''))
