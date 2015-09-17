@@ -1,6 +1,7 @@
 # My
 images/
 crawl/
+*.bts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
