@@ -16,16 +16,16 @@ class AmazonCatalogItem(AmazonItem):
     title = scrapy.Field()
     link = scrapy.Field()
     review_count = scrapy.Field()
-    image_urls = scrapy.Field()
-    images = scrapy.Field()
+    # image_urls = scrapy.Field()
+    # images = scrapy.Field()
 
 
 class AmazonDetailItem(AmazonItem):
     title = scrapy.Field()
     features = scrapy.Field()
     review_count = scrapy.Field()
-    image_urls = scrapy.Field()
-    images = scrapy.Field()
+    # image_urls = scrapy.Field()
+    # images = scrapy.Field()
     link = scrapy.Field()
     review_link = scrapy.Field()
 

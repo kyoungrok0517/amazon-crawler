@@ -24,9 +24,9 @@ class HeadphoneSpider(CrawlSpider):
              callback='parse_detail')
     )
     REVIEW_COUNT_PATTERN = re.compile(r'[0-9]+,?[0-9]+')
-
     def _extract_review_count(self, s):
-        return re.search(self.REVIEW_COUNT_PATTERN, s).group(0)
+        count_string = str(re.search(self.REVIEW_COUNT_PATTERN, s).group(0)) 
+        return int(count_string.replace(',', ''))
 
     def parse_reviews(self, response):
         review_containers = response.xpath(
@@ -35,7 +35,7 @@ class HeadphoneSpider(CrawlSpider):
             item = AmazonReviewItem()
             item['item_type'] = 'review'
             try:
-                item['link'] = response.url
+                item['link'] = rc.xpath('.//a[contains(@class, "review-title")]/@href').extract_first()
                 item['item_link'] = response.meta['item_link']
                 item['helpful_vote_count'] = rc.xpath(
                     './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first()
@@ -82,7 +82,7 @@ class HeadphoneSpider(CrawlSpider):
             try:
                 item['title'] = ic.css(
                     'h2.s-access-title::text').extract_first()
-                item['image_urls'] = ic.xpath('.//img/@src').extract()
+                # item['image_urls'] = ic.xpath('.//img/@src').extract()
                 item['link'] = ic.css(
                     'a.s-access-detail-page').xpath('@href').extract_first()
                 item['review_count'] = ic.xpath(
