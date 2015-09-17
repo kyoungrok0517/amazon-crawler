@@ -67,7 +67,7 @@ class HeadphoneSpider(CrawlSpider):
             item['link'] = response.url
             item['review_link'] = response.xpath(
                 '//*[@id="summaryStars"]/a/@href').extract_first()
-            # yield item
+            yield item
         except Exception as e:
             self.logger.error('parsing error: %s' % response)
 
@@ -87,7 +87,7 @@ class HeadphoneSpider(CrawlSpider):
                     'a.s-access-detail-page').xpath('@href').extract_first()
                 item['review_count'] = ic.xpath(
                     './/a[contains(@href, "#customerReviews")]/text()').extract_first()
-                # yield item
+                yield item
             except Exception as e:
                 self.logger.error('parsing error: %s' % response)
                 raise CloseSpider()
