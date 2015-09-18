@@ -62,11 +62,12 @@ class ToySpider(CrawlSpider):
             self.logger.error('Failed to parse item_detail at %s' % response.url)
             
         # 리뷰 크롤링
-        try:
-            yield Request(item['review_link'], meta={'item_link': item['link']}, callback=self.parse_reviews)
-        except Exception as e:
-            self.logger.error(e)
-            self.logger.error("Failed to follow review_link at %s" % response.url)
+        if item['review_link']:
+            try:
+                yield Request(item['review_link'], meta={'item_link': item['link']}, callback=self.parse_reviews)
+            except Exception as e:
+                self.logger.error(e)
+                self.logger.error("Failed to follow review_link at %s" % response.url)
      
     def parse_reviews(self, response):
         review_containers = response.xpath(
