@@ -24,7 +24,7 @@ class ToySpider(AmazonAbstractSpider):
             item['title'] = response.xpath(
                 '//*[@id="productTitle"]/text()').extract_first()
             item['features'] = " ".join(
-                response.xpath('//*[@id="featurebullets_feature_div"]//span/text()').extract())
+                response.xpath('//*[@id="featurebullets_feature_div"]//span/text()').extract()).strip()
 
             item['review_count'] = self._extract_review_count(response)
 

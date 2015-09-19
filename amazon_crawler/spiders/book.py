@@ -16,7 +16,9 @@ class ToySpider(AmazonAbstractSpider):
     name = "book"
     allowed_domains = ["amazon.com"]
     start_urls = [
-        'http://www.amazon.com/s/ref=lp_283155_nr_n_2?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%211000%2Cn%3A3&bbn=1000&ie=UTF8&qid=1442667295&rnid=1000']
+        'http://www.amazon.com/s/ref=lp_283155_nr_n_2?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%211000%2Cn%3A3&bbn=1000&ie=UTF8&qid=1442667295&rnid=1000',
+        'http://www.amazon.com/s/ref=lp_283155_nr_n_0?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%211000%2Cn%3A1&bbn=1000&ie=UTF8&qid=1442667295&rnid=1000',
+        'http://www.amazon.com/s/ref=lp_283155_nr_n_21?fst=as%3Aoff&rh=n%3A283155%2Cn%3A%211000%2Cn%3A3377866011&bbn=1000&ie=UTF8&qid=1442667295&rnid=1000']
     rules = (
         # Rule(LinkExtractor(restrict_xpaths=('//a[@id="pagnNextLink"]')), callback='parse_catalog', follow=True),
         Rule(LinkExtractor(restrict_xpaths=('//a[@id="pagnNextLink"]'))),
