@@ -36,7 +36,7 @@ class AmazonAbstractSpider(CrawlSpider):
         
     def _extract_helpful_vote_count(self, s):
         try:
-            return tuple(int(cnt.replace(',', '')) for cnt in re.findall(self.HELPFUL_VOTE_COUNT_PATTERN, s))
+            return [int(cnt.replace(',', '')) for cnt in re.findall(self.HELPFUL_VOTE_COUNT_PATTERN, s)]
         except Exception as e:
             self.logger.error(e)
             self.logger.error("Error parsing helpful_vote_count at %s" % response.url)
@@ -46,4 +46,26 @@ class AmazonAbstractSpider(CrawlSpider):
         raise NotImplementedError()
      
     def parse_reviews(self, response):
-        raise NotImplementedError()
+        review_containers = response.xpath(
+            '//*[@id="cm_cr-review_list"]//div[@class="a-section review" and @id]')
+        for rc in review_containers:
+            item = AmazonReviewItem()
+            item['item_type'] = 'review'
+            try:
+                link = rc.xpath('.//a[contains(@class, "review-title")]/@href').extract_first()
+                item['link'] = response.urljoin(link)
+                
+                item['item_link'] = response.meta['item_link']
+                item['helpful_vote_count'] = self._extract_helpful_vote_count(rc.xpath(
+                    './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first())
+                item['title'] = rc.xpath(
+                    './/*[contains(@class, "review-title")]/text()').extract_first()
+                item['text'] = " ".join(rc.xpath(
+                    './/span[contains(@class, "review-text")]/text()').extract())
+
+                if item['title']:
+                    yield item
+
+            except Exception as e:
+                self.logger.error(e)
+                self.logger.error('parsing error: %s' % response)

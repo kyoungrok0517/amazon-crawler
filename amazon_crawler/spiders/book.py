@@ -9,10 +9,10 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.exceptions import CloseSpider
 from urlparse import parse_qsl, urlparse
 from amazon_crawler.items import AmazonCatalogItem, AmazonDetailItem, AmazonReviewItem
-from amazon_crawler.spiders import AmazonAbstractCrawler
+from amazon_crawler.spiders import AmazonAbstractSpider
 
 
-class ToySpider(AmazonAbstractCrawler):
+class ToySpider(AmazonAbstractSpider):
     name = "book"
     allowed_domains = ["amazon.com"]
     start_urls = [
@@ -30,11 +30,9 @@ class ToySpider(AmazonAbstractCrawler):
             item['item_type'] = 'detail'
             item['title'] = response.xpath(
                 '//*[@id="productTitle"]/text()').extract_first()
-            item['features'] = " ".join(
-                response.xpath('//*[@id="featurebullets_feature_div"]//span/text()').extract())
-
+            # item['features'] = " ".join(
+            #     response.xpath('//*[@id="featurebullets_feature_div"]//span/text()').extract())
             item['review_count'] = self._extract_review_count(response)
-
             item['link'] = response.url
             item['review_link'] = response.xpath(
                 '//*[@id="summaryStars"]/a/@href').extract_first()
@@ -51,27 +49,4 @@ class ToySpider(AmazonAbstractCrawler):
                 self.logger.error(e)
                 self.logger.error("Failed to follow review_link at %s" % response.url)
      
-    def parse_reviews(self, response):
-        review_containers = response.xpath(
-            '//*[@id="cm_cr-review_list"]//div[@class="a-section review" and @id]')
-        for rc in review_containers:
-            item = AmazonReviewItem()
-            item['item_type'] = 'review'
-            try:
-                link = rc.xpath('.//a[contains(@class, "review-title")]/@href').extract_first()
-                item['link'] = response.urljoin(link)
-                
-                item['item_link'] = response.meta['item_link']
-                item['helpful_vote_count'] = rc.xpath(
-                    './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first()
-                item['title'] = rc.xpath(
-                    './/*[contains(@class, "review-title")]/text()').extract_first()
-                item['text'] = " ".join(rc.xpath(
-                    './/span[contains(@class, "review-text")]/text()').extract())
 
-                if item['title']:
-                    yield item
-
-            except Exception as e:
-                self.logger.error(e)
-                self.logger.error('parsing error: %s' % response)

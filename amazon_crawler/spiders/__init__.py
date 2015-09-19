@@ -2,4 +2,4 @@
 #
 # Please refer to the documentation for information on how to create and manage
 # your spiders.
-from amazon_crawler.spiders.amazon import AmazonAbstractCrawler
+from amazon_crawler.spiders.amazon import AmazonAbstractSpider
