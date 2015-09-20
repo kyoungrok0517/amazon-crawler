@@ -56,8 +56,7 @@ class AmazonAbstractSpider(CrawlSpider):
                 item['link'] = response.urljoin(link)
                 
                 item['item_link'] = response.meta['item_link']
-                item['helpful_vote_count'] = self._extract_helpful_vote_count(rc.xpath(
-                    './/*[contains(@class, "helpful-votes-count")]//span/text()').extract_first())
+                item['helpful_vote_count'] = rc.xpath('.//*[contains(@class, "helpful-votes-count")]//span/text()').extract_first()
                 item['title'] = rc.xpath(
                     './/*[contains(@class, "review-title")]/text()').extract_first()
                 item['text'] = " ".join(rc.xpath(

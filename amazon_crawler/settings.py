@@ -15,7 +15,7 @@ SPIDER_MODULES = ['amazon_crawler.spiders']
 NEWSPIDER_MODULE = 'amazon_crawler.spiders'
 
 
-LOG_FILE = "amazon.log"
+# LOG_FILE = "amazon.log"
 LOG_LEVEL = "INFO"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
